@@ -1,41 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Experiment</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 1000px;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Adjust brightness until text is barely legible</h2>
-    <label for="brightnessRange1">Brightness:</label>
-    <input type="range" min="0" max="100" value="5" class="slider" id="brightnessRange1">
-    <div class="image-container">
-      <img id="image1" src="prototype_page-0006.jpg" alt="Example Image 1">
-    </div>
-  </div>
 
-  <div class="container">
-    <h2>Adjust zoom until text is barely legible</h2>
-    <label for="zoomRange2">Zoom:</label>
-    <input type="range" min="0" max="100" value="20" class="slider" id="zoomRange2">
-    <div class="image-container">
-      <img id="image2" src="prototype_page-0007.jpg" alt="Example Image 2">
-    </div>
-  </div>
+<div id="map"></div>
 
-  <div class="container">
-    <h2>Adjust saturation until you can barely make out the colors</h2>
-    <label for="saturationRange3">Saturation:</label>
-    <input type="range" min="0" max="100" value="0" class="slider" id="saturationRange3">
-    <div class="image-container">
-      <img id="image3" src="colors.png" alt="Example Image 3" class="default">
-    </div>
-  </div>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="main.js"></script>
 
-  <button id="submitButton">Submit</button>
-
-  <script src="script.js"></script>
 </body>
 </html>
