@@ -9,13 +9,14 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png
 }).addTo(map);
 
 // Function to determine style based on feature properties
-function getBuildingStyle(feature) {
+function getBuildingStyle(feature,zoom) {
   var properties = feature.properties;
   var fill;
   var border;
+  var weight = 1;
+  var opacity = 1;
 
-  var id_list = ['4726588','4328975','2614014','16322055','4661214','868885682','1609614','75658']
-  // Check each property sequentially until a match is found
+  var id_list = ['4726588','4328975','2614014','16322055','4661214','868885682','1609614','75658','549109296']
   if (id_list.includes(properties.osm_id) || id_list.includes(properties.osm_way_id)) {
     fill = '#f17170';
     border = 'red';
@@ -25,31 +26,10 @@ function getBuildingStyle(feature) {
     border = 'green';
 
   } else if (properties.leisure) {
-    switch (properties.leisure) {
-      case 'park':
-      case 'garden':
-      case 'playground':
-        fill = '#c2e4cb';
-        break;
-
-      // Add more cases for other types
-      default:
-        fill = 'gray';
-        break;
-    }
+    fill = '#c2e4cb';
   } else if (properties.historic) {
-    switch (properties.historic) {
-      case 'castle':
-      case 'memorial':
-      case 'monument':
-      case 'building':
-      case 'monastery':
-      case 'archaeological_site':
-        fill = '#f17170';
-        border = 'red';
-        break;
-    }
-
+    fill = '#f17170';
+    border = 'red'; 
   } else if (properties.tourism) {
     switch (properties.tourism) {
       case 'museum':
@@ -62,10 +42,6 @@ function getBuildingStyle(feature) {
         border = 'red';
         break;
       case 'hotel':
-        fill = '#ffdbc5';
-        border = '#ffdbc5'
-        break;
-      // Add more cases for other types
       case 'apartment':
         fill = '#ffdbc5';
         break;
@@ -100,44 +76,59 @@ function getBuildingStyle(feature) {
         break;
       
     }
-  } else if (properties.building == 'retail' || properties.shop == 'department_store' || properties.shop == 'gift') {
+  } else if (properties.building == 'retail' || properties.building == 'yes' || properties.building == 'hotel' || properties.shop == 'department_store' || properties.shop == 'gift') {
     fill = '#ffdbc5';
-  } else if (properties.shop == 'bakery') {
+  } else if (properties.shop == 'bakery' || properties.building == 'apartments') {
     fill = '#fa9b5c';
   } else if (properties.landuse == 'grass') {
     fill = '#c2e4cb';
   } 
-  else if (properties.building == 'apartments') {
-    fill = '#fa9b5c';
-  }
-  else if (properties.building == 'yes') {
-    fill = '#ffdbc5';
-  }
   else if (properties.natural) {
-    switch (properties.natural) {
-      case 'water':
-        fill = '#4ac3ff';
+    fill = '#4ac3ff';
+  }
+  else {
+    fill = '#ededed';
+  }
+
+  if (fill == '#fa9b5c' || fill == '#ffdbc5') {
+    if (zoom < 16) {
+      fill = 'none';
+      border = 'none';
+      weight = 0;
+      opacity = 0;
     }
   }
 
-  else {
-    fill = '#ededed'; // Default color
-  }
-
-  return { fillColor: fill, color: border, weight: 1, fillOpacity: 1 };
+  return { fillColor: fill, color: border, weight: weight, fillOpacity: opacity };
 }
 
+var currentZoom = map.getZoom();
+console.log(currentZoom)
+
 // Load GeoJSON data for buildings
-fetch('cleaned6.geojson')
-  .then(response => response.json())
-  .then(data => {
-    // Create a layer for buildings
-    L.geoJSON(data, {
-      style: getBuildingStyle, // Use the function to determine style
-      onEachFeature: function (feature, layer) {
-        if (feature.properties && (feature.properties.osm_way_id || feature.properties.osm_id)) {
-          layer.bindPopup("ID: " + (feature.properties.osm_way_id || feature.properties.osm_id));
-        }
-      }
-    }).addTo(map);
-  });
+fetch('buildings.geojson')
+    .then(response => response.json())
+    .then(data => {
+        // Create a layer for buildings
+        var buildingsLayer = L.geoJSON(data, {
+            style: function (feature) {
+              // Call getBuildingStyle with feature and current zoom level
+              return getBuildingStyle(feature, currentZoom);
+          },
+            onEachFeature: function (feature, layer) {
+                if (feature.properties && (feature.properties.osm_way_id || feature.properties.osm_id)) {
+                    layer.bindPopup("ID: " + (feature.properties.osm_way_id || feature.properties.osm_id));
+                }
+            }
+        }).addTo(map);
+
+        // Event listener for zoom level change
+        map.on('zoom', function () {
+            var currentZoom = map.getZoom();
+            console.log(currentZoom);
+            // Check if zoom level is greater than or equal to the desired level
+            buildingsLayer.setStyle(function (feature) {
+              return getBuildingStyle(feature, currentZoom);
+            });
+        });
+    });
