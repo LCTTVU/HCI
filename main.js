@@ -106,7 +106,7 @@ var icons = {
   'plazaEspana': [[40.4234, -3.7122],'icons/plaza_de_espana.png', [100, 85], [50, 85], "Plaza de España"],
   'temploDebod': [[40.4240, -3.7177],'icons/templo_de_debod.png', [114, 82], [57, 82], "Templo de Debod"],
   'puertaSol': [[40.4170, -3.7034],'icons/puerta_de_sol.png', [84, 78], [42, 78], "Puerta de Sol"],
-  'plazaMayor': [[40.4154, -3.7073],'icons/plaza_mayor.png', [80, 78], [40, 78], "Plaza Mayor"],
+  'plazaMayor': [[40.4157, -3.7073],'icons/plaza_mayor.png', [80, 78], [40, 78], "Plaza Mayor"],
   'bancoEspana': [[40.418, -3.6948],'icons/banco_de_espana.png', [110, 82], [55, 82], "Banco de España"],
   'metropolis': [[40.4188, -3.6974],'icons/edificio_metropolis.png', [110, 78], [55, 78], "Edificio Metrópolis"],
   'palacioCibeles': [[40.4184, -3.6918],'icons/palacio_de_cibeles.png', [110, 80], [55, 80], "Palacio de Cibeles"],
@@ -163,6 +163,7 @@ async function calculateShortestRoute(waypoints) {
   data.waypoints.sort((a, b) => a.waypoint_index - b.waypoint_index);
   for (var j = 0; j < data.waypoints.length; j++) {
     var pnt = data.waypoints[j].location;
+    var lat = pnt[1];
     var lng = pnt[0];
     var l = L.latLng(lat,lng);
     shortestRoute.push(l);
