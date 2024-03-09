@@ -101,31 +101,91 @@ var currentZoom = map.getZoom();
 console.log(currentZoom)
 
 var icons = {
-  'palacio': [[40.418, -3.7142],'icons/palacio.png', [129, 82], [64.5, 82]],
-  'catedral': [[40.4157, -3.7144],'icons/catedral.png', [96, 100], [48, 100]],
-  'plazaEspana': [[40.4234, -3.7122],'icons/plaza_de_espana.png', [100, 85], [50, 85]],
-  'temploDebod': [[40.4240, -3.7177],'icons/templo_de_debod.png', [114, 82], [57, 82]],
-  'puertaSol': [[40.4170, -3.7034],'icons/puerta_de_sol.png', [84, 78], [42, 78]],
-  'plazaMayor': [[40.4154, -3.7073],'icons/plaza_mayor.png', [80, 78], [40, 78]],
-  'bancoEspana': [[40.418, -3.6948],'icons/banco_de_espana.png', [110, 82], [55, 82]],
-  'metropolis': [[40.4188, -3.6974],'icons/edificio_metropolis.png', [110, 78], [55, 78]],
-  'palacioCibeles': [[40.4184, -3.6918],'icons/palacio_de_cibeles.png', [110, 80], [55, 80]],
-  'fuenteCibeles': [[40.4193, -3.69305],'icons/fuente_de_cibeles.png', [110, 82], [55, 82]],
-  'fuenteNeptuno': [[40.4153, -3.6941],'icons/fuente_de_neptuno.png', [118, 82], [59, 82]],
-  'museoNacional': [[40.4137, -3.6922],'icons/museo_nacional.png', [100, 96], [50, 96]],
-  'puertaAlcala': [[40.420, -3.68875],'icons/puerta_de_alcala.png', [114, 82], [57, 82]]
+  'palacio': [[40.418, -3.7142],'icons/palacio.png', [129, 82], [64.5, 82], "Royal Palace of Madrid"],
+  'catedral': [[40.4157, -3.7144],'icons/catedral.png', [96, 100], [48, 100], "Catedral de la Almudena"],
+  'plazaEspana': [[40.4234, -3.7122],'icons/plaza_de_espana.png', [100, 85], [50, 85], "Plaza de España"],
+  'temploDebod': [[40.4240, -3.7177],'icons/templo_de_debod.png', [114, 82], [57, 82], "Templo de Debod"],
+  'puertaSol': [[40.4170, -3.7034],'icons/puerta_de_sol.png', [84, 78], [42, 78], "Puerta de Sol"],
+  'plazaMayor': [[40.4154, -3.7073],'icons/plaza_mayor.png', [80, 78], [40, 78], "Plaza Mayor"],
+  'bancoEspana': [[40.418, -3.6948],'icons/banco_de_espana.png', [110, 82], [55, 82], "Banco de España"],
+  'metropolis': [[40.4188, -3.6974],'icons/edificio_metropolis.png', [110, 78], [55, 78], "Edificio Metrópolis"],
+  'palacioCibeles': [[40.4184, -3.6918],'icons/palacio_de_cibeles.png', [110, 80], [55, 80], "Palacio de Cibeles"],
+  'fuenteCibeles': [[40.4193, -3.69305],'icons/fuente_de_cibeles.png', [110, 82], [55, 82], "Fuente de Cibeles"],
+  'fuenteNeptuno': [[40.4153, -3.6941],'icons/fuente_de_neptuno.png', [118, 82], [59, 82], "Fuente de Neptuno"],
+  'museoNacional': [[40.4137, -3.6925],'icons/museo_nacional.png', [100, 96], [50, 96], "Museo Nacional del Prado"],
+  'puertaAlcala': [[40.420, -3.68875],'icons/puerta_de_alcala.png', [114, 82], [57, 82], "Puerta de Alcalá"]
 };
 
-function addIcon(coordinates,url,size,anchor) {
+var routePoint;
+
+function addIcon(coordinates,url,size,anchor,name) {
   var icon = L.icon({iconUrl: url,iconSize: size,iconAnchor: anchor});
-  L.marker(coordinates, {icon: icon}).addTo(map);
+  marker = L.marker(coordinates, {icon: icon});
+  marker.addTo(map);
+  marker.on('click', function() {
+    var details = document.getElementById('detail-container');
+    details.innerHTML = `<h2>${name}</h2><p>Marker description goes here...</p>`;
+    routePoint = coordinates;
+  })
 }
+
 
 for (var key in icons) {
-  addIcon(icons[key][0], icons[key][1], icons[key][2], icons[key][3]);
+  addIcon(icons[key][0], icons[key][1], icons[key][2], icons[key][3], icons[key][4]);
 }
 
-// Load GeoJSON data for buildings
+var control = L.Routing.control({
+  router: L.Routing.mapbox('pk.eyJ1IjoidGxlNjY2NjYiLCJhIjoiY2x0aXJ5dzFvMGJleTJqcXZnZm90am9zcCJ9.mjkQGX5LlnquU31bG2YC4w', {profile: 'mapbox/walking'}),
+  waypoints: [
+    L.latLng(40.4167, -3.7034) //starting point
+  ],
+  routeWhileDragging: true,
+  lineOptions: {
+      styles: [{color: '#000000', opacity: 0.8, weight: 5}]
+  }
+}).addTo(map);
+
+
+async function calculateShortestRoute(waypoints) {
+  var coordinates = [];
+  for (var i = 0; i < waypoints.length; i++) {
+    var point = waypoints[i].latLng;
+    coordinates.push(point);
+  }
+  var coords = coordinates.map(coordinates => `${coordinates.lng},${coordinates.lat}`).join(';');
+
+  const baseUrl = 'http://router.project-osrm.org/trip/v1/walking/';
+  var url = `${baseUrl}${coords}?source=first&roundtrip=false`;
+  const response = await fetch(url);
+  const data = await response.json();
+
+  var shortestRoute = [];
+  data.waypoints.sort((a, b) => a.waypoint_index - b.waypoint_index);
+  for (var j = 0; j < data.waypoints.length; j++) {
+    var pnt = data.waypoints[j].location;
+    var lng = pnt[0];
+    var l = L.latLng(lat,lng);
+    shortestRoute.push(l);
+  }
+  return shortestRoute;
+}
+
+
+
+
+
+
+document.getElementById('addRouteButton').addEventListener('click', async function () {
+  if (routePoint) {
+    var point = L.latLng(routePoint[0],routePoint[1]);
+    control.spliceWaypoints(control.getWaypoints().length,0,point);
+    var waypoints = control.getWaypoints();
+    var validWaypoints = waypoints.filter(waypoint => waypoint.latLng !== null);
+    var shortestRoute = await calculateShortestRoute(validWaypoints);
+    control.setWaypoints(shortestRoute);
+  } 
+});
+
 fetch('B.geojson')
     .then(response => response.json())
     .then(data => {
@@ -152,11 +212,6 @@ fetch('B.geojson')
             });
         });
 
-        var control = L.Routing.control({
-          waypoints: [
-              L.latLng(40.418, -3.7142), // Start point
-              L.latLng(40.4184, -3.6918)    // End point
-          ],
-          routeWhileDragging: true // Show the route while dragging the waypoints
-      }).addTo(map);
+       
     });
+

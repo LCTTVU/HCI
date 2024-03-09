@@ -1,0 +1,34 @@
+#map {
+    flex: 3;
+    width: 100%;
+    height: 100%;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+.widget {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+}
+
+#detail-container {
+    flex: 5;
+}
+
+#button-container {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#addRouteButton {
+    width: 80%;
+    height: 50px;
+}
