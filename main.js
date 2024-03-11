@@ -101,8 +101,8 @@ var currentZoom = map.getZoom();
 console.log(currentZoom)
 
 var icons = {
-  'palacio': [[40.418, -3.7142],'icons/palacio.png', [129, 82], [64.5, 82], "Royal Palace of Madrid"],
-  'catedral': [[40.4157, -3.7144],'icons/catedral.png', [96, 100], [48, 100], "Catedral de la Almudena"],
+  'palacio': [[40.418, -3.71437],'icons/palacio.png', [129, 82], [64.5, 82], "Royal Palace of Madrid"],
+  'catedral': [[40.4158, -3.7144],'icons/catedral.png', [96, 100], [48, 100], "Catedral de la Almudena"],
   'plazaEspana': [[40.4234, -3.7122],'icons/plaza_de_espana.png', [100, 85], [50, 85], "Plaza de España"],
   'temploDebod': [[40.4240, -3.7177],'icons/templo_de_debod.png', [114, 82], [57, 82], "Templo de Debod"],
   'puertaSol': [[40.4170, -3.7034],'icons/puerta_de_sol.png', [84, 78], [42, 78], "Puerta de Sol"],
@@ -135,11 +135,11 @@ for (var key in icons) {
 }
 
 var control = L.Routing.control({
-  router: L.Routing.mapbox('pk.eyJ1IjoidGxlNjY2NjYiLCJhIjoiY2x0aXJ5dzFvMGJleTJqcXZnZm90am9zcCJ9.mjkQGX5LlnquU31bG2YC4w', {profile: 'mapbox/walking'}),
+  router: L.Routing.mapbox('pk.eyJ1IjoidGxlNjY2NjYiLCJhIjoiY2x0aXJ5dzFvMGJleTJqcXZnZm90am9zcCJ9.mjkQGX5LlnquU31bG2YC4w', {profile: 'mapbox/walking',radiuses:100}),
   waypoints: [
     L.latLng(40.4167, -3.7034) //starting point
   ],
-  routeWhileDragging: true,
+  routeWhileDragging: false,
   lineOptions: {
       styles: [{color: '#000000', opacity: 0.8, weight: 5}]
   }
@@ -187,7 +187,7 @@ document.getElementById('addRouteButton').addEventListener('click', async functi
   } 
 });
 
-fetch('B.geojson')
+fetch('building.geojson')
     .then(response => response.json())
     .then(data => {
         // Create a layer for buildings
