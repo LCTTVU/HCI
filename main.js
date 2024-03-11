@@ -187,7 +187,7 @@ document.getElementById('addRouteButton').addEventListener('click', async functi
   } 
 });
 
-fetch('building.geojson')
+fetch('https://raw.githubusercontent.com/LCTTVU/HCI/main/building.geojson')
     .then(response => response.json())
     .then(data => {
         // Create a layer for buildings
