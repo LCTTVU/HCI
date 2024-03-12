@@ -18,8 +18,10 @@
 }
 
 #detail-container {
-    flex: 5;
+    flex: 3;
 }
+
+
 
 #button-container {
     flex: 1;
@@ -31,4 +33,45 @@
 #addRouteButton {
     width: 80%;
     height: 50px;
+}
+
+
+#legend {
+    flex: 2;
+    display: flex;
+    flex-wrap: wrap; /* This allows items to wrap onto multiple lines */
+}
+
+.grid-item {
+    width: 100px; /* Set your desired width */
+    height: 50px; /* Set your desired height */
+    margin: 10px; /* Add some margin between items */
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#historic {
+    background-color: #f17170;
+}
+
+#plaza {
+    background-color: #60ca8c;
+}
+
+#museum {
+    background-color: #a889c2;
+}
+
+#worship {
+    background-color: #f2d172;
+}
+
+#shopping {
+    background-color: #ffdbc5;
+}
+
+#food {
+    background-color: #fa9b5c;
 }

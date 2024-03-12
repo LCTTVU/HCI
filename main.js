@@ -14,8 +14,8 @@ function getBuildingStyle(feature,zoom) {
   var properties = feature.properties;
   var fill = 'none';
   var border = 'none';
-  var weight = 0;
-  var opacity = 0;
+  var weight = 1;
+  var opacity = 1;
 
   var special_id_list = ['4726588','4328975','2614014','16322055','4661214','868885682','1609614','75658','549109296','1006252510']
   if (special_id_list.includes(properties.osm_id) || special_id_list.includes(properties.osm_way_id)) {
@@ -25,6 +25,7 @@ function getBuildingStyle(feature,zoom) {
    else if (properties.place) {
     fill = '#60ca8c';
     border = 'green';
+    opacity = 0.5;
   } else if (properties.historic) {
     fill = '#f17170';
     border = 'red'; 
@@ -77,13 +78,11 @@ function getBuildingStyle(feature,zoom) {
     }
   } else if (properties.shop == 'bakery' || properties.building == 'apartments') {
     fill = '#fa9b5c';
+
   }  
   else if (properties.building || properties.shop) {
     fill = '#ffdbc5';
   }
-
-  weight = 1;
-  opacity = 1;
 
   if (fill == '#fa9b5c' || fill == '#ffdbc5') {
     if (zoom < 16) {
@@ -197,8 +196,8 @@ fetch('https://raw.githubusercontent.com/LCTTVU/HCI/main/building.geojson')
               return getBuildingStyle(feature, currentZoom);
           },
             onEachFeature: function (feature, layer) {
-                if (feature.properties && (feature.properties.osm_way_id || feature.properties.osm_id)) {
-                    layer.bindPopup("ID: " + (feature.properties.osm_way_id || feature.properties.osm_id));
+                if (feature.properties) {
+                    layer.bindPopup(feature.properties.name);
                 }
             }
         }).addTo(map);
