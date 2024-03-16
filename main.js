@@ -112,7 +112,16 @@ var icons = {
   'fuenteCibeles': [[40.4193, -3.69305],'icons/fuente_de_cibeles.png', [110, 82], [55, 82], "Fuente de Cibeles"],
   'fuenteNeptuno': [[40.4153, -3.6941],'icons/fuente_de_neptuno.png', [118, 82], [59, 82], "Fuente de Neptuno"],
   'museoNacional': [[40.4137, -3.6925],'icons/museo_nacional.png', [100, 96], [50, 96], "Museo Nacional del Prado"],
-  'puertaAlcala': [[40.420, -3.68875],'icons/puerta_de_alcala.png', [114, 82], [57, 82], "Puerta de Alcalá"]
+  'puertaAlcala': [[40.420, -3.68875],'icons/puerta_de_alcala.png', [114, 82], [57, 82], "Puerta de Alcalá"],
+  'telefonica': [[40.4202, -3.7019],'icons/telefonica.png',[128, 74], [64, 74], "Fundación Telefónica"],
+  'teatroReal': [[40.4182, -3.7109 ], 'icons/teatro_real.png',[74, 74], [37, 74], "Teatro Real"],
+  'monasterioDescalzas': [[40.4186, -3.7062], 'icons/monasterio.png',[108, 82], [54 , 82], "Monasterio de las Descalzas Reales"],
+  'parqueElRetiro':[[40.416, -3.686],'icons/el_retiro.png',[120, 85], [60, 85],"Parque de El Retiro"],
+  'monumentAlfonso': [[40.4174, -3.6831],'icons/alfonsoxii.png',[144, 82], [72, 82],'Monument to Alfonso XII'],
+  'palacioVelazquez': [[40.4152, -3.682],'icons/palacio_velazquez.png',[110, 72], [55, 72],"Palacio de Velázquez"],
+  'palacioCristal': [[40.4135, -3.682],'icons/palacio_cristal.png',[94, 72], [47, 72],'Palacio de Cristal'],
+  'jardinesCeicilio': [[40.4126, -3.6778],'icons/jardines_cecilio.png',[90, 82], [45, 82],'Jardines de Cecilio Rodríguez'],
+  'rosaleda': [[40.4107, -3.6787],'icons/rosaleda.png',[78, 78], [78, 78],'La Rosaleda']
 };
 
 var routePoint;
@@ -186,7 +195,7 @@ document.getElementById('addRouteButton').addEventListener('click', async functi
   } 
 });
 
-fetch('https://raw.githubusercontent.com/LCTTVU/HCI/main/building.geojson')
+fetch('buildings.geojson')
     .then(response => response.json())
     .then(data => {
         // Create a layer for buildings
