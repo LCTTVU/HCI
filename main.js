@@ -1,5 +1,5 @@
 // Initialize the map centered on Madrid
-var map = L.map('map').setView([40.4170, -3.7034], 15); // Madrid coordinates (latitude, longitude) and zoom level
+var map = L.map('map').setView([40.4170, -3.697], 15); // Madrid coordinates (latitude, longitude) and zoom level
 
 // Add a tile layer
 L.tileLayer('https://tile.jawg.io/d8548ead-a5fa-44e4-a37d-06b2d8e85a5a/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
@@ -195,7 +195,7 @@ document.getElementById('addRouteButton').addEventListener('click', async functi
   } 
 });
 
-fetch('buildings.geojson')
+fetch('https://raw.githubusercontent.com/LCTTVU/HCI/main/buildings.geojson')
     .then(response => response.json())
     .then(data => {
         // Create a layer for buildings
